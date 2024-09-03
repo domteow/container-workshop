@@ -1,0 +1,23 @@
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bggns
+  labels:
+    app: bgg
+    name: bggns
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bggapp-config
+  namespace: bggns
+  labels:
+    app: bgg
+    name: bggapp-config
+data:
+  BGG_DB_USER: root
+  BGG_DB_HOST: bggdb-svc

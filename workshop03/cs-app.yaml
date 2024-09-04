@@ -1,0 +1,105 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csapp-deploy
+  namespace: cs-ns
+  labels:
+    app: cs
+    name: csapp-deploy
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cs
+      name: cs-pod
+
+  template:
+    metadata:
+      name: cs-pod
+      namespace: cs-ns
+      labels:
+        app: cs
+        name: cs-pod
+    spec:
+      # securityContext:
+      #   fsGroup: 1000
+      volumes:
+      - name: data-vol
+      
+        persistentVolumeClaim:
+          claimName: cs-pvc
+
+      containers:
+      - name: cs-container
+        image: lscr.io/linuxserver/code-server:latest
+        # env:
+        # - name: PUID
+        #   value: "1000"
+        # - name: PGID
+        #   value: "1000"
+
+        envFrom:
+        - configMapRef:
+            name: cs-config
+        - secretRef:
+            name: cs-secret
+        ports:
+        - containerPort: 8443
+        # resources: 
+        #   requests:
+        #     memory: "256Mi"       # Request 256 MB of memory
+        #     cpu: "200m"           # Request 200 milli cores of CPU
+        #   limits:
+        #     memory: "256Mi"       # Limit to 256 MB of memory
+        #     cpu: "200m"           # Limit to 200 milli cores of CPU
+        volumeMounts:
+        - name: data-vol
+          mountPath: /config/workspace
+        resources: {}
+
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cs-svc
+  namespace: cs-ns
+  labels:
+    app: cs
+    name: cs-svc
+        
+spec:
+  type: ClusterIP
+  selector:
+    app: cs
+    name: cs-pod
+    
+  ports:
+  - port: 8443
+    targetPort: 8443
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cs-ing
+  namespace: cs-ns
+  labels:
+    app: cs
+    name: cs-ing
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: cs-104.248.96.148.nip.io
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        
+        backend:
+          service:
+            name: cs-svc
+            port: 
+              number: 8443

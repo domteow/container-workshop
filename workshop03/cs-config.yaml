@@ -1,0 +1,23 @@
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cs-ns
+  labels:
+    app: cs
+    name: cs-ns
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cs-config
+  namespace: cs-ns
+  labels:
+    app: cs
+    name: cs-config
+data:
+  TZ: Asia/Singapore
+  DEFAULT_WORKSPACE: /config/workspace
+  PROXYDOMAIN: cs-104.248.96.148.nip.io

@@ -11,6 +11,11 @@ metadata:
     name: bggapp-deploy
 
 spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   replicas: 3
   selector:
     matchLabels:
@@ -30,7 +35,7 @@ spec:
     spec:
       containers:
       - name: bggapp-container
-        image: stackupiss/bgg-backend:v1
+        image: stackupiss/bgg-backend:v2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000

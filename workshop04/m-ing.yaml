@@ -1,0 +1,47 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: m-console-ing
+  namespace: m-ns
+  labels:
+    app: m
+    name: m-console-ing
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: console-104.248.96.148.nip.io
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        
+        backend:
+          service:
+            name: m-hsvc
+            port: 
+              number: 9090
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: m-data-ing
+  namespace: m-ns
+  labels:
+    app: m
+    name: m-data-ing
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: data-104.248.96.148.nip.io
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        
+        backend:
+          service:
+            name: m-hsvc
+            port: 
+              number: 9000

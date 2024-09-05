@@ -1,0 +1,28 @@
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: m-ns
+  labels:
+    app: m
+    name: m-ns
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: m-cm
+  namespace: m-ns
+  labels:
+    app: m
+    name: m-cm
+data:
+  MINIO_ROOT_USER: minio-root-user
+  MINIO_DATA_DIR: /data
+  MINIO_DISTRIBUTED_MODE_ENABLED: "yes"
+  # TODO: change to domain name below
+  MINIO_DISTRIBUTED_NODES: m-sts-0.m-hsvc.m-ns.svc.cluster.local,m-sts-1.m-hsvc.m-ns.svc.cluster.local,m-sts-2.m-hsvc.m-ns.svc.cluster.local,m-sts-3.m-hsvc.m-ns.svc.cluster.local
+  MINIO_API_PORT_NUMBER: "9000"
+  MINIO_CONSOLE_PORT_NUMBER: "9090"
